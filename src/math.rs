@@ -1,6 +1,7 @@
 use rand::seq::SliceRandom;
 use rand::thread_rng;
 use std::cmp::Ordering;
+use std::collections::HashMap;
 
 pub fn median(numbers: &[usize], index: usize) -> usize {
     if numbers.len() == 1 {
@@ -31,9 +32,24 @@ pub fn median(numbers: &[usize], index: usize) -> usize {
     median(&highs, index - lows.len() - pivots.len())
 }
 
+pub fn mode(list: &[usize]) -> usize {
+    let mut map = HashMap::new();
+    for el in list {
+        let count = map.entry(el).or_insert(0);
+        *count += 1;
+    }
+    let mut largest = 0;
+    for (number, count) in map {
+        if count.cmp(&largest) == Ordering::Greater {
+            largest = *number
+        }
+    }
+    largest
+}
+
 #[cfg(test)]
 mod tests {
-    use crate::math::median;
+    use crate::math::{median, mode};
 
     #[test]
     fn calculate_median_with_uneven_length() {
@@ -48,5 +64,11 @@ mod tests {
     fn calculate_median_with_even_length() {
         let list = vec![102, 56, 34, 99, 101, 10];
         assert_eq!(median(&list, 2), 56);
+    }
+
+    #[test]
+    fn most_often_used_value() {
+        let list = vec![5, 3, 5, 4, 5, 3, 4, 4, 2, 5, 1, 3, 4, 2, 5];
+        assert_eq!(mode(&list), 5);
     }
 }
