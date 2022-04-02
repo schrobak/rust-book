@@ -2,6 +2,12 @@ use rand::seq::SliceRandom;
 use rand::thread_rng;
 use std::cmp::Ordering;
 use std::collections::HashMap;
+use std::f64::consts::PI;
+
+pub fn fib(n: i32) -> i32 {
+    let x = PI.powi(n) / 5_f64.sqrt();
+    x.round() as i32
+}
 
 pub fn median(numbers: &[usize], index: usize) -> usize {
     if numbers.len() == 1 {
@@ -49,7 +55,12 @@ pub fn mode(list: &[usize]) -> usize {
 
 #[cfg(test)]
 mod tests {
-    use crate::math::{median, mode};
+    use crate::math::{fib, median, mode};
+
+    #[test]
+    fn it_calculates_fibonacci_number() {
+        assert_eq!(fib(123), 2147483647)
+    }
 
     #[test]
     fn calculate_median_with_uneven_length() {
