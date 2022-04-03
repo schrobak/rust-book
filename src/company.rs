@@ -6,7 +6,7 @@ pub enum Command {
     ListDepartmentEmployees {
         department: String,
     },
-    ListCompanyEmployees(),
+    ListCompanyEmployees,
     Unknown(String),
     None,
 }
@@ -21,7 +21,7 @@ pub fn parse_command(command: &str) -> Command {
         ["list", department] => Command::ListDepartmentEmployees {
             department: department.to_string(),
         },
-        ["list"] => Command::ListCompanyEmployees(),
+        ["list"] => Command::ListCompanyEmployees,
         [cmd, ..] => Command::Unknown(cmd.to_string()),
         [] => Command::None,
     }
