@@ -1,30 +1,30 @@
+use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 use std::hash::Hash;
 
-pub struct Memoize<Closure, Arg, Result> {
+pub struct Memoize<Closure, Arg, Res> {
     closure: Closure,
-    results: HashMap<Arg, Result>,
+    results: HashMap<Arg, Res>,
 }
 
-impl<Closure, Arg, Result> Memoize<Closure, Arg, Result>
+impl<Closure, Arg, Res> Memoize<Closure, Arg, Res>
 where
-    Closure: Fn(Arg) -> Result,
+    Closure: Fn(Arg) -> Res,
     Arg: Eq + Hash + Copy,
-    Result: Copy,
+    Res: Copy,
 {
-    pub fn new(closure: Closure) -> Memoize<Closure, Arg, Result> {
+    pub fn new(closure: Closure) -> Memoize<Closure, Arg, Res> {
         Memoize {
             closure,
             results: HashMap::new(),
         }
     }
 
-    pub fn call(&mut self, arg: Arg) -> Result {
-        let res = self
-            .results
-            .entry(arg)
-            .or_insert_with_key(|k| (self.closure)(*k));
-        *res
+    pub fn call(&mut self, arg: Arg) -> Res {
+        match self.results.entry(arg) {
+            Entry::Occupied(v) => *v.get(),
+            Entry::Vacant(v) => (self.closure)(v.into_key()),
+        }
     }
 }
 
